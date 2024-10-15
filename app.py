@@ -79,6 +79,6 @@ if st.button("Dự đoán"):
     confidence = model.predict_proba(input_data_scaled)
 
     # Hiển thị kết quả dự đoán
-    result = 'Có nguy cơ mắc bệnh tiểu đường' nếu dự đoán[0] == 1 else 'Không có nguy cơ mắc bệnh tiểu đường'
+    result = 'Có nguy cơ mắc bệnh tiểu đường' if prediction[0] == 1 else 'Không có nguy cơ mắc bệnh tiểu đường'
     st.write(f"Kết quả dự đoán: {result}")
     st.write(f"Độ tin cậy của dự đoán: {confidence.max() * 100:.2f}%")
