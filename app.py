@@ -9,7 +9,7 @@ from sklearn.neural_network import MLPClassifier
 import joblib
 
 # Load the dataset
-data = pd.read_csv('diabetes_health_indicators.csv')
+data = pd.read_csv('diabetes_binary_5050split_health_indicators_BRFSS2015.csv')
 
 # Kiểm tra thông tin về dữ liệu
 # st.write(data.head())
