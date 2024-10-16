@@ -66,24 +66,23 @@ if st.checkbox('Hiển thị Chỉ số Mô Hình và Biểu đồ'):
             st.write(f"- ROC-AUC: {metrics['ROC-AUC']:.2f}")
         
         # Confusion Matrix
-        if model_name in models:
-            model = models[model_name]
-            try:
-                # Kiểm tra xem mô hình có thể dự đoán được trên X_test không
-                if hasattr(model, 'predict'):
-                    y_pred_test = model.predict(X_test)
-                    conf_matrix = confusion_matrix(y_test, y_pred_test)
-                    plt.figure(figsize=(6, 4))
-                    sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
-                    plt.title(f'Confusion Matrix cho {model_name}')
-                    plt.ylabel('Thực tế')
-                    plt.xlabel('Dự đoán')
-                    st.pyplot(plt.gcf())  # Hiển thị đồ thị trên Streamlit
-                    plt.clf()  # Xóa đồ thị để chuẩn bị cho đồ thị tiếp theo
-                else:
-                    st.warning(f"{model_name} không có phương thức 'predict'.")
-            except Exception as e:
-                st.error(f"Lỗi khi tạo Confusion Matrix: {e}")
+        model = models[model_name]
+        try:
+            # Kiểm tra nếu mô hình có phương thức 'predict'
+            if hasattr(model, 'predict'):
+                y_pred_test = model.predict(X_test)
+                conf_matrix = confusion_matrix(y_test, y_pred_test)
+                plt.figure(figsize=(6, 4))
+                sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
+                plt.title(f'Confusion Matrix cho {model_name}')
+                plt.ylabel('Thực tế')
+                plt.xlabel('Dự đoán')
+                st.pyplot(plt.gcf())  # Hiển thị đồ thị trên Streamlit
+                plt.clf()  # Xóa đồ thị để chuẩn bị cho đồ thị tiếp theo
+            else:
+                st.warning(f"{model_name} không có phương thức 'predict'.")
+        except Exception as e:
+            st.error(f"Lỗi khi tạo Confusion Matrix: {e}")
         
         # ROC Curve
         try:
