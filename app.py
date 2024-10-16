@@ -21,7 +21,7 @@ models = {
 }
 
 # Giao diện Streamlit
-st.title("Mô Hình Dự đoán Bệnh Tiểu đường")
+st.title("Ứng dụng Dự đoán Tiểu đường")
 
 # Sidebar cho lựa chọn mô hình
 st.sidebar.title("Chọn Mô Hình")
@@ -29,14 +29,15 @@ model_choice = st.sidebar.selectbox("Mô Hình", list(models.keys()))
 
 # Input dữ liệu của người dùng
 st.write("## Nhập Dữ Liệu Bệnh Nhân:")
+
 pregnancies = st.number_input('Số lần mang thai', min_value=0, max_value=20, value=6)
 glucose = st.number_input('Mức Glucose (mg/dL)', min_value=0, max_value=200, value=148)
-blood_pressure = st.number_input('Huyết áp', min_value=0, max_value=150, value=72)
-skin_thickness = st.number_input('Độ dày da', min_value=0, max_value=100, value=35)
-insulin = st.number_input('Mức Insulin', min_value=0, max_value=900, value=0)
-bmi = st.number_input('Chỉ số BMI', min_value=0.0, max_value=60.0, value=33.6)
+blood_pressure = st.number_input('Huyết áp (mmHg)', min_value=0, max_value=150, value=72)
+skin_thickness = st.number_input('Độ dày da (mm)', min_value=0, max_value=100, value=35)
+insulin = st.number_input('Mức Insulin (µU/mL)', min_value=0, max_value=900, value=0)
+bmi = st.number_input('Chỉ số BMI (kg/m²)', min_value=0.0, max_value=60.0, value=33.6)
 dpf = st.number_input('Chỉ số Di truyền tiểu đường', min_value=0.0, max_value=2.5, value=0.627)
-age = st.number_input('Tuổi', min_value=1, max_value=100, value=50)
+age = st.number_input('Tuổi (năm)', min_value=1, max_value=100, value=50)
 
 # Dữ liệu đầu vào để dự đoán
 input_data = np.array([pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]).reshape(1, -1)
