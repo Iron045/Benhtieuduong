@@ -30,7 +30,7 @@ model_choice = st.sidebar.selectbox("Mô Hình", list(models.keys()))
 # Input dữ liệu của người dùng
 st.write("## Nhập Dữ Liệu Bệnh Nhân:")
 pregnancies = st.number_input('Số lần mang thai', min_value=0, max_value=20, value=6)
-glucose = st.number_input('Mức Glucose', min_value=0, max_value=200, value=148)
+glucose = st.number_input('Mức Glucose (mg/dL)', min_value=0, max_value=200, value=148)
 blood_pressure = st.number_input('Huyết áp', min_value=0, max_value=150, value=72)
 skin_thickness = st.number_input('Độ dày da', min_value=0, max_value=100, value=35)
 insulin = st.number_input('Mức Insulin', min_value=0, max_value=900, value=0)
