@@ -56,12 +56,10 @@ def evaluate_models(models, X_test, y_test, X_train, y_train, X_val, y_val):
         y_pred_train = model.predict(X_train)
         y_pred_val = model.predict(X_val)
         
-        # Độ chính xác trên các tập
+        # Đánh giá độ chính xác
         train_accuracy = accuracy_score(y_train, y_pred_train)
         val_accuracy = accuracy_score(y_val, y_pred_val)
         accuracy = accuracy_score(y_test, y_pred_test)
-        
-        # Các chỉ số khác trên tập kiểm tra
         precision = precision_score(y_test, y_pred_test)
         recall = recall_score(y_test, y_pred_test)
         f1 = f1_score(y_test, y_pred_test)
@@ -73,7 +71,6 @@ def evaluate_models(models, X_test, y_test, X_train, y_train, X_val, y_val):
         else:
             roc_auc = None
         
-        # Lưu kết quả vào dictionary
         results[name] = {
             'train_accuracy': train_accuracy,
             'val_accuracy': val_accuracy,
@@ -83,5 +80,4 @@ def evaluate_models(models, X_test, y_test, X_train, y_train, X_val, y_val):
             'F1 Score': f1,
             'ROC-AUC': roc_auc
         }
-    
     return results
