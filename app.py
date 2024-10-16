@@ -1,12 +1,13 @@
-
-# app.py
 import streamlit as st
 import numpy as np
 import train_model
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix, roc_curve
 
 # Load and preprocess data
 X, y = train_model.load_data()
-X_train, X_test, y_train, y_test, scaler = train_model.preprocess_data(X, y)
+X_train, X_val, X_test, y_train, y_val, y_test, scaler = train_model.preprocess_data(X, y)
 
 # Train models
 svm_model, logistic_model, mlp_model, stacking_model = train_model.train_models(X_train, y_train)
@@ -28,14 +29,14 @@ model_choice = st.sidebar.selectbox("Model", list(models.keys()))
 
 # Input fields for user data
 st.write("## Input Patient Data:")
-pregnancies = st.number_input('Pregnancies', min_value=0, max_value=20, value=1)
-glucose = st.number_input('Glucose', min_value=0, max_value=200, value=85)
-blood_pressure = st.number_input('Blood Pressure', min_value=0, max_value=150, value=70)
-skin_thickness = st.number_input('Skin Thickness', min_value=0, max_value=100, value=30)
-insulin = st.number_input('Insulin', min_value=0, max_value=900, value=100)
-bmi = st.number_input('BMI', min_value=0.0, max_value=60.0, value=25.0)
-dpf = st.number_input('Diabetes Pedigree Function', min_value=0.0, max_value=2.5, value=0.5)
-age = st.number_input('Age', min_value=1, max_value=100, value=30)
+pregnancies = st.number_input('Pregnancies', min_value=0, max_value=20, value=6)
+glucose = st.number_input('Glucose', min_value=0, max_value=200, value=148)
+blood_pressure = st.number_input('Blood Pressure', min_value=0, max_value=150, value=72)
+skin_thickness = st.number_input('Skin Thickness', min_value=0, max_value=100, value=35)
+insulin = st.number_input('Insulin', min_value=0, max_value=900, value=0)
+bmi = st.number_input('BMI', min_value=0.0, max_value=60.0, value=33.6)
+dpf = st.number_input('Diabetes Pedigree Function', min_value=0.0, max_value=2.5, value=0.627)  
+age = st.number_input('Age', min_value=1, max_value=100, value=50)
 
 # Input data to be used for prediction
 input_data = np.array([pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]).reshape(1, -1)
@@ -48,9 +49,39 @@ if st.button('Predict'):
     result = 'Diabetes' if prediction == 1 else 'No Diabetes'
     st.write(f"Prediction: {result}")
 
-# Show model accuracy
-if st.checkbox('Show Model Accuracy'):
+# Show model metrics and confusion matrix/ROC-AUC
+if st.checkbox('Show Model Metrics and Plots'):
+    st.write("### Model Metrics and Plots:")
     accuracies = train_model.evaluate_models(models, X_test, y_test)
-    st.write("### Model Accuracies:")
-    for model_name, accuracy in accuracies.items():
-        st.write(f"{model_name}: {accuracy:.2f}")
+    
+    for model_name, metrics in accuracies.items():
+        st.write(f"**{model_name}:**")
+        st.write(f"- Accuracy: {metrics['Accuracy']:.2f}")
+        st.write(f"- Precision: {metrics['Precision']:.2f}")
+        st.write(f"- Recall: {metrics['Recall']:.2f}")
+        st.write(f"- F1 Score: {metrics['F1 Score']:.2f}")
+        if metrics['ROC-AUC'] is not None:
+            st.write(f"- ROC-AUC: {metrics['ROC-AUC']:.2f}")
+        
+        # Confusion Matrix
+        conf_matrix = confusion_matrix(y_test, model.predict(X_test))
+        plt.figure(figsize=(6, 4))
+        sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
+        plt.title(f'Confusion Matrix for {model_name}')
+        plt.ylabel('Actual')
+        plt.xlabel('Predicted')
+        st.pyplot(plt.gcf())  # Use Streamlit to display the current figure
+        plt.clf()  # Clear the figure for the next plot
+
+        # ROC Curve
+        if metrics['ROC-AUC'] is not None:
+            fpr, tpr, _ = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
+            plt.figure(figsize=(6, 4))
+            plt.plot(fpr, tpr, label=f'{model_name} (AUC = {metrics["ROC-AUC"]:.2f})')
+            plt.plot([0, 1], [0, 1], linestyle='--', color='gray')
+            plt.title(f'ROC Curve for {model_name}')
+            plt.xlabel('False Positive Rate')
+            plt.ylabel('True Positive Rate')
+            plt.legend()
+            st.pyplot(plt.gcf())  # Use Streamlit to display the current figure
+            plt.clf()  # Clear the figure for the next plot
