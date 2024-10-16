@@ -37,7 +37,7 @@ skin_thickness = st.number_input('Độ dày da (mm)', min_value=0, max_value=10
 insulin = st.number_input('Mức Insulin (µU/mL)', min_value=0, max_value=900, value=0)
 bmi = st.number_input('Chỉ số BMI (kg/m²)', min_value=0.0, max_value=60.0, value=33.6)
 dpf = st.number_input('Chỉ số Di truyền tiểu đường', min_value=0.0, max_value=2.5, value=0.627)
-age = st.number_input('Tuổi (năm)', min_value=1, max_value=100, value=50)
+age = st.number_input('Tuổi ', min_value=1, max_value=100, value=50)
 
 # Dữ liệu đầu vào để dự đoán
 input_data = np.array([pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]).reshape(1, -1)
