@@ -51,17 +51,17 @@ def train_models(X_train, y_train):
 def evaluate_models(models, X_test, y_test, X_train, y_train, X_val, y_val):
     results = {}
     for name, model in models.items():
-        # Dự đoán trên tập kiểm tra
+        # Dự đoán trên tập kiểm tra, huấn luyện và validation
         y_pred_test = model.predict(X_test)
         y_pred_train = model.predict(X_train)
         y_pred_val = model.predict(X_val)
         
-        # Độ chính xác tập huấn luyện và validation
+        # Độ chính xác trên các tập
         train_accuracy = accuracy_score(y_train, y_pred_train)
         val_accuracy = accuracy_score(y_val, y_pred_val)
-        
-        # Độ chính xác trên tập kiểm tra
         accuracy = accuracy_score(y_test, y_pred_test)
+        
+        # Các chỉ số khác trên tập kiểm tra
         precision = precision_score(y_test, y_pred_test)
         recall = recall_score(y_test, y_pred_test)
         f1 = f1_score(y_test, y_pred_test)
@@ -73,6 +73,7 @@ def evaluate_models(models, X_test, y_test, X_train, y_train, X_val, y_val):
         else:
             roc_auc = None
         
+        # Lưu kết quả vào dictionary
         results[name] = {
             'train_accuracy': train_accuracy,
             'val_accuracy': val_accuracy,
@@ -82,4 +83,5 @@ def evaluate_models(models, X_test, y_test, X_train, y_train, X_val, y_val):
             'F1 Score': f1,
             'ROC-AUC': roc_auc
         }
+    
     return results
