@@ -21,7 +21,7 @@ models = {
 }
 
 # Giao diện Streamlit
-st.title("Ứng dụng Dự đoán Tiểu đường")
+st.title("Mô Hình Dự đoán Bệnh Tiểu đường")
 
 # Sidebar cho lựa chọn mô hình
 st.sidebar.title("Chọn Mô Hình")
