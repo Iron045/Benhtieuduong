@@ -91,4 +91,6 @@ if st.checkbox('Hiển thị độ chính xác và biểu đồ mô hình'):
                 st.pyplot(plt.gcf())  # Hiển thị biểu đồ
                 plt.clf()  # Xóa biểu đồ để vẽ biểu đồ khác
             else:
-                st.warning(f
+                st.warning(f"{model_name} không hỗ trợ dự đoán xác suất cho Đường cong ROC.")
+        except Exception as e:
+            st.error(f"Lỗi khi tạo đường cong ROC: {e}")
