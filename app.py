@@ -3,7 +3,7 @@ import numpy as np
 import train_model
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import confusion_matrix, roc_curve
+from sklearn.metrics import confusion_matrix, roc_curve, roc_auc_score
 
 # Load and preprocess data
 X, y = train_model.load_data()
@@ -35,7 +35,7 @@ blood_pressure = st.number_input('Blood Pressure', min_value=0, max_value=150, v
 skin_thickness = st.number_input('Skin Thickness', min_value=0, max_value=100, value=35)
 insulin = st.number_input('Insulin', min_value=0, max_value=900, value=0)
 bmi = st.number_input('BMI', min_value=0.0, max_value=60.0, value=33.6)
-dpf = st.number_input('Diabetes Pedigree Function', min_value=0.0, max_value=2.5, value=0.627)  
+dpf = st.number_input('Diabetes Pedigree Function', min_value=0.0, max_value=2.5, value=0.627)
 age = st.number_input('Age', min_value=1, max_value=100, value=50)
 
 # Input data to be used for prediction
@@ -64,24 +64,35 @@ if st.checkbox('Show Model Metrics and Plots'):
             st.write(f"- ROC-AUC: {metrics['ROC-AUC']:.2f}")
         
         # Confusion Matrix
-        conf_matrix = confusion_matrix(y_test, model.predict(X_test))
-        plt.figure(figsize=(6, 4))
-        sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
-        plt.title(f'Confusion Matrix for {model_name}')
-        plt.ylabel('Actual')
-        plt.xlabel('Predicted')
-        st.pyplot(plt.gcf())  # Use Streamlit to display the current figure
-        plt.clf()  # Clear the figure for the next plot
+        if model_name in models:
+            model = models[model_name]
+            try:
+                conf_matrix = confusion_matrix(y_test, model.predict(X_test))
+                plt.figure(figsize=(6, 4))
+                sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
+                plt.title(f'Confusion Matrix for {model_name}')
+                plt.ylabel('Actual')
+                plt.xlabel('Predicted')
+                st.pyplot(plt.gcf())  # Use Streamlit to display the current figure
+                plt.clf()  # Clear the figure for the next plot
 
+            except Exception as e:
+                st.error(f"Error encountered while generating the confusion matrix: {e}")
+        
         # ROC Curve
-        if metrics['ROC-AUC'] is not None:
-            fpr, tpr, _ = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
-            plt.figure(figsize=(6, 4))
-            plt.plot(fpr, tpr, label=f'{model_name} (AUC = {metrics["ROC-AUC"]:.2f})')
-            plt.plot([0, 1], [0, 1], linestyle='--', color='gray')
-            plt.title(f'ROC Curve for {model_name}')
-            plt.xlabel('False Positive Rate')
-            plt.ylabel('True Positive Rate')
-            plt.legend()
-            st.pyplot(plt.gcf())  # Use Streamlit to display the current figure
-            plt.clf()  # Clear the figure for the next plot
+        try:
+            if hasattr(model, 'predict_proba'):
+                fpr, tpr, _ = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
+                plt.figure(figsize=(6, 4))
+                plt.plot(fpr, tpr, label=f'{model_name} (AUC = {metrics["ROC-AUC"]:.2f})')
+                plt.plot([0, 1], [0, 1], linestyle='--', color='gray')
+                plt.title(f'ROC Curve for {model_name}')
+                plt.xlabel('False Positive Rate')
+                plt.ylabel('True Positive Rate')
+                plt.legend()
+                st.pyplot(plt.gcf())  # Use Streamlit to display the current figure
+                plt.clf()  # Clear the figure for the next plot
+            else:
+                st.warning(f"{model_name} does not support probability predictions for ROC Curve.")
+        except Exception as e:
+            st.error(f"Error encountered while generating the ROC curve: {e}")
